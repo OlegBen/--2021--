@@ -1,4 +1,5 @@
 import socket, time
+from DBManager import DBManager
 
 # Get host and port
 host = socket.gethostbyname(socket.gethostname())
@@ -10,6 +11,9 @@ clients = []
 # Initial setup TCP/IP and start server
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.bind((host, port))
+
+# Data base manager
+db = DBManager()
 
 print("[ Server start ]")
 
@@ -30,14 +34,30 @@ while not quit:
 
         # LOG on server
         print("[ " + addr[0] + " ] = [ " + str(addr[1]) + " ] = [ " + currentTime + " ]/", end="")
-        print(data.decode("utf-8"))
+
+        log = data.decode("utf-8")
+        print(log)
+
+        # Check on new client ("Join")
+        if "join chat" in log:
+            # Get messages history
+            savedMessages = db.getAllMessages()
+            # Send saved messages to join client
+            for message in savedMessages:
+                s.sendto(message[0].encode("utf-8"), addr)
 
         # Send message all clients without sender
         for client in clients:
             if addr != client:
                 s.sendto(data, client)
+
+        # Save message on DB
+        print("Here log: " + log)
+        db.save(log, "Server")
     except:
         print("[ Server stop ]")
+        # Clean DB then server stop
+        db.cleanManager()
         quit = True
 
 # Close server connection
