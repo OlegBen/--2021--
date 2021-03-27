@@ -9,6 +9,8 @@
 ![Step 3](/StepsPreview/Step3.png)
 - Try quit from chat.
 ![Step 4](/StepsPreview/Step4.png)
+- Enter in chat as new client and get all previous messages after join
+![Step 5](/StepsPreview/Step5.png)
 
 
 ***The project was made on Python 3.9.0***
